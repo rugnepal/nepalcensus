@@ -1,0 +1,86 @@
+---
+title: "Nepal Preliminary Census 2078"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr)
+library(nepalmap)
+library(geojsonio)
+library(leaflet)
+# source("leaft_nepal.R")
+source("R/map_chart.R")
+source("R/bar_pie_charts.R")
+# source("clean_data.R")
+```
+
+
+Row 
+-------------------------------------
+
+### Total Population
+
+```{r}
+valueBox("2,91,92,480")
+```
+
+### Total Household
+
+```{r}
+valueBox("67,61,059")
+```
+
+### Total Houses Number
+
+```{r}
+valueBox("56,43,945")
+```
+
+### Average Family size
+
+```{r}
+valueBox("4.32")
+```
+
+### Annual Population Growth Rate (%)
+
+```{r}
+valueBox("0.93")
+```
+
+
+Column {data-width=550}
+-----------------------------------------------------------------------
+
+### Provincal Map of Nepal
+
+```{r}
+map_chart(all_province, labels)
+```
+
+### Gender Distribution
+
+```{r}
+pie_gender
+```
+
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Gender Distribution
+
+```{r}
+sex_region
+```
+
+### Household and Population
+
+```{r}
+household_province
+```
+
