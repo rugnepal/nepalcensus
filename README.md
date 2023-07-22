@@ -4,6 +4,8 @@ Short Description:
 
 The nepalcensus package for R is a comprehensive and up-to-date tool that provides detailed information from the latest census of Nepal. It offers a user-friendly interface to access and explore a wide range of demographic, socio-economic, and geographic data collected during the most recent census conducted in Nepal. This package is designed to assist researchers, policymakers, and data analysts in understanding and utilizing census data effectively for various applications and insights.
 
+![nepal_population_census_2078](https://user-images.githubusercontent.com/8600091/230250461-b42cbf75-54d1-49c3-8e3a-8ea09da2b209.png)
+
 Purpose of the Package:
 
 - Data Accessibility: The primary purpose of the nepalCensus package is to make the latest census data of Nepal easily accessible to R users. It saves users the hassle of manually searching and downloading data from various sources, providing a convenient and streamlined approach to accessing the information they need.
@@ -28,7 +30,7 @@ Purpose of the Package:
 
 In conclusion, a nepalcensus package is a powerful tool that empowers R users with the latest and most comprehensive census data of Nepal, fostering valuable insights, research, and informed decision-making for a wide range of applications.
 
-![nepal_population_census_2078](https://user-images.githubusercontent.com/8600091/230250461-b42cbf75-54d1-49c3-8e3a-8ea09da2b209.png)
+
 
 
 
