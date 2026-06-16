@@ -1,0 +1,25 @@
+
+library(tidyverse)
+
+
+
+# Get all RDS files
+rds_files <- list.files(path=here::here("data"), pattern = "\\.rds$", full.names = TRUE)
+
+# Extract new names
+new_names <- str_extract(rds_files, "^[^_]+")
+
+# Use walk2 to process files and new names in parallel
+walk2(
+  rds_files,
+  new_names,
+  ~ {
+    # Read and convert each file
+    dataset <- readRDS(.x)
+    assign(.y, dataset, envir = .GlobalEnv)
+    save(list = .y, file = paste0(.y, ".rda"), envir = .GlobalEnv, compress="xz", compression_level=9)
+    message("Converted ", .x, " to ", .y, ".rda")
+  }
+)
+
+rds_files %>% file.remove()

@@ -1,0 +1,11 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^man/inst$
+^CRAN_PLAN\.md$
+^LICENSE\.md$
+^\.DS_Store$
+^\.RData$
+^\.Rhistory$
+^purpose\.txt$
+

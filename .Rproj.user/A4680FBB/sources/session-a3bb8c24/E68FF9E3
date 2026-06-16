@@ -1,0 +1,24 @@
+{
+    "id": "E68FF9E3",
+    "path": "~/Documents/R/projects/nepalcensus/nepalcensus/data-raw/02_convert_rds_rda.R",
+    "project_path": "data-raw/02_convert_rds_rda.R",
+    "type": "r_source",
+    "hash": "622523629",
+    "contents": "",
+    "dirty": false,
+    "created": 1781422142550.0,
+    "source_on_save": false,
+    "relative_order": 13,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1781418172,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1781418172,
+    "read_only": false,
+    "read_only_alternatives": []
+}

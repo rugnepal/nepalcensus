@@ -1,0 +1,49 @@
+#' Table 01: Number of households by type of ownership of housing unit, NPHC 2021
+#'
+#' A dataset containing the number of households categorized by housing ownership type
+#' from the Nepal Population and Housing Census 2021.
+#'
+#' @format A data frame with 8 variables:
+#' \describe{
+#'   \item{prov}{Integer. Provincial code}
+#'   \item{dist}{Integer. District code}
+#'   \item{gapa}{Integer. Gaunpalika/Municipality code}
+#'   \item{provname}{Character. Province name}
+#'   \item{dname}{Character. District name}
+#'   \item{gapaname}{Character. Gaunpalika/Municipality name}
+#'   \item{category}{Character. Type of housing ownership category}
+#'   \item{number}{Integer. Number of households}
+#' }
+#' @source National Statistics Office (NSO) of Nepal - NPHC 2021
+#' @examples
+#' # Load the data
+#' data(Hhld01)
+#'
+#' # View first few rows
+#' head(Hhld01)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

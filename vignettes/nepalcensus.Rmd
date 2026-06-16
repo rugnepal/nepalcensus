@@ -1,0 +1,236 @@
+---
+title: "Introduction to nepalcensus"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to nepalcensus}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nepalcensus)
+```
+
+## Overview
+
+The **nepalcensus** package provides tidy access to 89 tabular datasets from
+Nepal's Population and Housing Census 2021 (NPHC 2078 BS), conducted by the
+National Statistics Office (NSO) of Nepal. Data cover household characteristics
+and individual-level demographics, cross-tabulated by province, district, and
+local level (Gaunpalika/Nagarpalika).
+
+## Dataset structure
+
+All datasets follow a consistent structure. Geographic identifiers:
+
+| Column | Description |
+|--------|-------------|
+| `prov` | Province code (`"0"` = Nepal total) |
+| `dist` | District code (`"0"` = province total) |
+| `gapa` | Gaunpalika/Nagarpalika code (`"0"` = district total) |
+| `provname` | Province name |
+| `dname` | District name |
+| `gapaname` | Local level name |
+| `category` | Classification category (e.g., ownership type, sex, age group) |
+| `number` | Count as character string (may contain commas or be blank for suppressed cells) |
+
+The `number` column is stored as character because raw census tables use
+formatted strings (e.g., `"1,234,567"`). Convert to numeric with
+`as.numeric(gsub(",", "", x$number))`.
+
+## Discovering datasets
+
+### Browse the full catalog
+
+```{r catalog-all}
+cat <- catalog()
+nrow(cat)
+head(cat[, c("table_no", "title", "dataset")])
+```
+
+### Filter by type
+
+```{r catalog-type}
+# Household tables only
+catalog(type = "household")[, c("table_no", "title")]
+```
+
+### Search by keyword
+
+```{r catalog-search}
+catalog(search = "education")[, c("table_no", "title", "dataset")]
+```
+
+`search_census()` is a convenience wrapper for keyword search:
+
+```{r search-census}
+search_census("migration")[, c("table_no", "title", "dataset")]
+```
+
+## Loading datasets
+
+Use `data()` with the dataset name from the `dataset` column:
+
+```{r load-data}
+data(Hhld01)
+head(Hhld01)
+```
+
+## Household characteristics
+
+### Housing ownership (Hhld01)
+
+```{r hhld01-national}
+data(Hhld01)
+# Nepal-level totals: prov == "0", dist == "0", gapa == "0"
+national <- Hhld01[Hhld01$prov == "0" & Hhld01$dist == "0" & Hhld01$gapa == "0", ]
+national[, c("category", "number")]
+```
+
+### Drinking water sources (Hhld06)
+
+```{r hhld06-province}
+data(Hhld06)
+# Province-level totals: dist == "0", gapa == "0", prov != "0"
+prov_totals <- Hhld06[Hhld06$dist == "0" & Hhld06$gapa == "0" & Hhld06$prov != "0", ]
+head(prov_totals[, c("provname", "category", "number")])
+```
+
+### Cooking fuel by province (Hhld07)
+
+```{r hhld07-cook}
+data(Hhld07)
+prov_fuel <- Hhld07[Hhld07$dist == "0" & Hhld07$gapa == "0" & Hhld07$prov != "0", ]
+head(prov_fuel[, c("provname", "category", "number")])
+```
+
+## Individual demographics
+
+### Population by sex (Indv01)
+
+```{r indv01-national}
+data(Indv01)
+national_pop <- Indv01[Indv01$prov == "0" & Indv01$dist == "0" & Indv01$gapa == "0", ]
+national_pop[, c("category", "n_hhld", "number")]
+```
+
+### Population by five-year age group and sex (Indv04)
+
+```{r indv04-age}
+data(Indv04)
+# Nepal total, both sexes combined (category == "Total")
+nepal_age <- Indv04[
+  Indv04$prov == "0" & Indv04$dist == "0" & Indv04$gapa == "0" &
+  Indv04$category == "Total",
+]
+head(nepal_age[, c("agegrpname", "number")])
+```
+
+### Disability by type (Indv16)
+
+```{r indv16-disability}
+data(Indv16)
+# Nepal total for all age groups (agegrp == "0") and both sexes (sex == "0")
+disability_nat <- Indv16[
+  Indv16$prov == "0" & Indv16$dist == "0" & Indv16$gapa == "0" &
+  Indv16$agegrp == "0" & Indv16$sex == "0",
+]
+disability_nat[, c("category", "number")]
+```
+
+### Literacy status by province (Indv17)
+
+```{r indv17-literacy}
+data(Indv17)
+# Province totals, all age groups, total sex
+literacy_prov <- Indv17[
+  Indv17$dist == "0" & Indv17$gapa == "0" & Indv17$prov != "0" &
+  Indv17$agegrp == "0" & Indv17$sex == "0",
+]
+head(literacy_prov[, c("provname", "category", "number")])
+```
+
+## Working with the data
+
+### Converting counts to numeric
+
+```{r numeric-conversion}
+data(Hhld01)
+nat <- Hhld01[Hhld01$prov == "0" & Hhld01$dist == "0" & Hhld01$gapa == "0", ]
+nat$count <- as.numeric(gsub(",", "", nat$number))
+nat[, c("category", "count")]
+```
+
+### Using dplyr
+
+```{r dplyr-example, eval = requireNamespace("dplyr", quietly = TRUE)}
+library(dplyr)
+
+data(Hhld01)
+Hhld01 |>
+  filter(prov == "0", dist == "0", gapa == "0") |>
+  mutate(count = as.numeric(gsub(",", "", number))) |>
+  select(category, count) |>
+  arrange(desc(count))
+```
+
+### Plotting with ggplot2
+
+```{r ggplot-example, eval = requireNamespace("ggplot2", quietly = TRUE), fig.width = 6, fig.height = 4}
+library(ggplot2)
+
+data(Hhld06)
+prov_water <- Hhld06[
+  Hhld06$dist == "0" & Hhld06$gapa == "0" & Hhld06$prov != "0",
+]
+prov_water$count <- as.numeric(gsub(",", "", prov_water$number))
+
+# Top water source by province (exclude total category)
+main_source <- prov_water[prov_water$category != "Total", ]
+
+ggplot(main_source, aes(x = reorder(provname, count), y = count / 1000,
+                         fill = category)) +
+  geom_col(position = "stack") +
+  coord_flip() +
+  labs(
+    title = "Households by drinking water source and province",
+    subtitle = "Nepal Population and Housing Census 2021",
+    x = NULL, y = "Households (thousands)", fill = "Water source"
+  ) +
+  theme_minimal(base_size = 10)
+```
+
+## Absent population abroad
+
+Nepal has significant labour migration. `Hhld23` and several `Indv` tables
+cover the absent population.
+
+```{r absent-pop}
+data(Hhld23)
+# Nepal total, all categories
+absent_nat <- Hhld23[
+  Hhld23$prov == "0" & Hhld23$dist == "0" & Hhld23$gapa == "0" &
+  Hhld23$agegrp == "0" & Hhld23$sex == "0",
+]
+head(absent_nat[, c("category", "number")])
+```
+
+Use `search_census("absent")` to find all related tables:
+
+```{r search-absent}
+search_census("absent")[, c("table_no", "title", "dataset")]
+```
+
+## Data source
+
+All datasets are sourced from the National Statistics Office (NSO) of Nepal:
+<https://censusnepal.cbs.gov.np/results/downloads/census-dataset>
+
+Nepal Population and Housing Census 2021 (NPHC 2078 BS).

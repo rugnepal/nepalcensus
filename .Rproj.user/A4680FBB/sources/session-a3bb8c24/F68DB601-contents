@@ -1,0 +1,69 @@
+# nepalcensus CRAN Submission Plan
+
+## Package Summary
+Data package: 89 datasets from Nepal Population and Housing Census 2021 (NPHC 2078 BS).
+Source: National Statistics Office (NSO), Nepal.
+23 Household (Hhld01–Hhld23) + 66 Individual (Indv01–Indv71, gaps at 08/12-15).
+
+## Current State (Gaps)
+- DESCRIPTION: placeholder (no real title/author/license)
+- NAMESPACE: generic `exportPattern` (CRAN frowns on this)
+- R/hello.R: placeholder, delete
+- R/catalog.R: top-level scraper script (not a function — violates CRAN policy)
+- R/convert.R: top-level converter script (same issue)
+- man/hello.Rd: stale placeholder
+- Only Hhld01.R has proper roxygen2 docs; 88 datasets undocumented
+- No LICENSE file
+- No package-level documentation
+- inst/ wrongly placed inside man/inst/ instead of root inst/
+
+## CRAN Requirements Being Fixed
+1. Valid DESCRIPTION with real fields
+2. MIT LICENSE + LICENSE.md
+3. All 89 datasets + datacatalog documented with roxygen2
+4. No executable top-level code in R/ (scripts moved to data-raw/)
+5. Explicit NAMESPACE exports
+6. Package-level docs
+7. User-facing functions: catalog(), search_census()
+8. .Rbuildignore cleanup
+
+## Files Changed
+
+### CREATE
+- R/nepalcensus-package.R    — package doc + datacatalog dataset doc
+- R/data-Hhld.R              — roxygen2 docs for Hhld01–Hhld23
+- R/data-Indv.R              — roxygen2 docs for Indv01–Indv71
+- R/catalog.R (new)          — catalog() function
+- R/search_census.R          — search_census() function
+- data-raw/01_scrape_catalog.R  — moved from R/catalog.R
+- data-raw/02_convert_rds_rda.R — moved from R/convert.R
+- LICENSE                    — MIT
+- LICENSE.md                 — MIT full text
+
+### MODIFY
+- DESCRIPTION  — complete all fields
+- NAMESPACE    — explicit exports via roxygen2
+- .Rbuildignore — add data-raw/
+
+### DELETE
+- R/hello.R
+- man/hello.Rd
+
+## Dataset Column Patterns
+All datasets share: prov, dist, gapa, provname, dname, gapaname, category, number
+Additional columns by type:
+- +sex/sexname: Hhld18, Indv06, Indv07 etc.
+- +agegrp/agegrpname: Hhld14, Hhld16, Indv03 etc.
+- +sex+agegrp: Hhld15, Hhld19-20, Hhld23, Indv09-11, Indv16-32, Indv52, Indv62, Indv66, Indv69
+- +occ1/occname: Indv40-42, Indv55, Indv61, Indv64
+- +ind1/indname: Indv43-45, Indv56-57, Indv65
+- +litsts+edulvl/educationlevel: Indv37-39, Indv54, Indv58-59, Indv63, Indv67
+- +wrkmon/workmonth: Indv49-51, Indv68
+- +empsts/empstatus: Indv60
+- +brthreg/brthregname: Indv71
+- Special: Hhld13 (+tot_hhld, dead_hhld), Hhld17 (+tot_hhld, absnt_hhld), Indv01 (+n_hhld),
+           Indv05 (+sizeclass/sizeclassname, num_locality, no_hhld), Indv36 (+chldtype/typename)
+
+## User-Facing Functions
+- catalog()           — returns datacatalog tibble; optional keyword search
+- search_census(kw)   — alias/sugar for catalog(search = kw)

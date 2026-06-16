@@ -1,0 +1,2 @@
+library(haven)
+dataset <- read_sas("C:/Users/bjungbogati/Downloads/Compressed/OneDrive_2025-04-28/OLD Training Folder/02_cm_domain/raw/cm.sas7bdat", NULL)
